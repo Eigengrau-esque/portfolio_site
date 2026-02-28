@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Projects | Adrian Bosi</title>
+  <meta name="description" content="Portfolio of administrative, graphic design, and development work by Adrian Bosi."/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+
+    /* ── LIGHTBOX ───────────────────────── */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      padding: 20px;
+    }
+
+    .lightbox-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 680px;
+      width: 100%;
+      transform: scale(0.92);
+      transition: transform 0.25s ease;
+    }
+
+    .lightbox-overlay.open .lightbox-inner {
+      transform: scale(1);
+    }
+
+    .lightbox-inner img {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      display: block;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -14px;
+      right: -14px;
+      width: 36px;
+      height: 36px;
+      background: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1a1a1a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+      line-height: 1;
+    }
+
+    .lightbox-close:hover { transform: scale(1.1); }
+
+    .lightbox-caption {
+      text-align: center;
+      color: rgba(255,255,255,0.65);
+      font-size: 0.82rem;
+      margin-top: 14px;
+      font-family: var(--font-body);
+      letter-spacing: 0.03em;
+    }
+
+    /* prev / next arrows */
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: background 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+    .lightbox-prev { right: calc(100% + 14px); }
+    .lightbox-next { left:  calc(100% + 14px); }
+
+    /* ── POSTER GRID (2+2 layout) ──────── */
+    .poster-section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      margin-top: 32px;
+    }
+
+    .poster-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .poster-thumb {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      position: relative;
+      aspect-ratio: 3/4;
+      background: var(--bg-2);
+      transition: all var(--transition);
+    }
+
+    .poster-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .poster-thumb:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+
+    .poster-thumb:hover img {
+      transform: scale(1.04);
+    }
+
+    .poster-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,43,58,0.0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.25s;
+    }
+
+    .poster-thumb:hover .poster-thumb-overlay {
+      background: rgba(26,43,58,0.38);
+    }
+
+    .poster-thumb-zoom {
+      opacity: 0;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s;
+      font-family: var(--font-body);
+    }
+
+    .poster-thumb-zoom svg {
+      width: 14px; height: 14px;
+      stroke: white; fill: none; stroke-width: 2;
+    }
+
+    .poster-thumb:hover .poster-thumb-zoom {
+      opacity: 1;
+    }
+
+    /* ── BRANDING CARD (wide) ─────────── */
+    .branding-card {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--bg-card);
+      transition: all var(--transition);
+      margin-bottom: 24px;
+    }
+
+    .branding-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .branding-card-img {
+      background: #3d2314;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      min-height: 200px;
+    }
+
+    .branding-card-img img {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 8px;
+    }
+
+    .branding-card-body {
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .branding-card-body .preview-tag {
+      margin-bottom: 10px;
+    }
+
+    .branding-card-body h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .branding-card-body p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .branding-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 700px) {
+      .branding-card { grid-template-columns: 1fr; }
+      .poster-grid { grid-template-columns: repeat(2, 1fr); }
+      .lightbox-prev, .lightbox-next { display: none; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox-overlay" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">&times;</button>
+      <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous image">&#8592;</button>
+      <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">&#8594;</button>
+      <img id="lightboxImg" src="" alt=""/>
+      <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+  </div>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="scrollProgress" style="position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:999;width:0;" aria-hidden="true"></div>
+
+  <nav class="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">Adrian Bosi</a>
+      <div class="nav-right">
+        <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinksWrap" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="nav-links-wrap" id="navLinksWrap">
+          <ul class="nav-links" role="list">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="projects.html" class="active">Projects</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+
+    <section class="page-header" aria-label="Page header">
+      <div class="page-header-bg" aria-hidden="true"></div>
+      <div class="container page-header-content">
+        <div class="section-eyebrow reveal">
+          <div class="eyebrow-line" aria-hidden="true"></div>
+          <span class="eyebrow-text">Portfolio</span>
+        </div>
+        <h1 class="reveal reveal-delay-1">Selected Work</h1>
+        <p class="reveal reveal-delay-2">Administrative documents, graphic design, and development projects — all from real work and school.</p>
+      </div>
+    </section>
+
+    <section class="projects-section" aria-label="Project portfolio">
+      <div class="container">
+
+        <!-- ======= 01: ADMIN ======= -->
+        <article class="project-category" id="admin" aria-labelledby="admin-title">
+          <div class="category-header reveal">
+            <span class="category-num" aria-hidden="true">01 &mdash;</span>
+            <h2 class="category-title" id="admin-title">Administrative Work</h2>
+          </div>
+
+          <div class="project-grid">
+
+            <div class="project-card reveal reveal-delay-1">
+              <div class="project-thumb">
+                <img src="../images/admin-minutes.jpg" alt="Meeting minutes sample document — Bright Occasions Event Planning"/>
+              </div>
+              <div class="project-info">
+                <h3>Meeting Minutes</h3>
+                <p>Formal minutes from a quarterly planning committee meeting — structured with attendance, agenda, discussion notes, and action items table.</p>
+                <div class="project-meta">
+                  <span class="project-tool">MS Word / Google Docs</span>
+                  <!--
+                    PASTE YOUR GOOGLE DRIVE PREVIEW LINK BELOW
+                    Format: https://docs.google.com/document/d/YOUR_ID/preview
+                  -->
+                  <a href="#" target="_blank" class="project-link" aria-label="View Meeting Minutes document">View document &rarr;</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-2">
+              <div class="project-thumb">
+                <img src="../images/admin-tracker.jpg" alt="Event project tracker spreadsheet — Rivera-Lim Wedding"/>
+              </div>
+              <div class="project-info">
+                <h3>Event Project Tracker</h3>
+                <p>Master task tracker for a 250-pax wedding event — three phases, 28 tasks, color-coded status columns, and owner assignments.</p>
+                <div class="project-meta">
+                  <span class="project-tool">Google Docs / MS Word</span>
+                  <!--
+                    PASTE YOUR GOOGLE DRIVE PREVIEW LINK BELOW
+                  -->
+                  <a href="#" target="_blank" class="project-link" aria-label="View Event Project Tracker">View tracker &rarr;</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-card reveal reveal-delay-3">
+              <div class="project-thumb">
+                <img src="../images/admin-letter.jpg" alt="Formal request letter sample — venue partnership proposal"/>
+              </div>
+              <div class="project-info">
+                <h3>Formal Request Letter</h3>
+                <p>Professional venue partnership proposal letter — letterhead, reference number, structured body, and formal signature block.</p>
+                <div class="project-meta">
+                  <span class="project-tool">MS Word</span>
+                  <!--
+                    PASTE YOUR GOOGLE DRIVE PREVIEW LINK BELOW
+                  -->
+                  <a href="#" target="_blank" class="project-link" aria-label="View Formal Request Letter">View letter &rarr;</a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </article>
+
+        <!-- ======= 02: GRAPHIC DESIGN ======= -->
+        <article class="project-category" id="design" aria-labelledby="design-title">
+          <div class="category-header reveal">
+            <span class="category-num" aria-hidden="true">02 &mdash;</span>
+            <h2 class="category-title" id="design-title">Graphic Design</h2>
+          </div>
+
+          <!-- JAFI BRANDING CARD — wide -->
+          <div class="branding-card reveal">
+            <div class="branding-card-img" aria-hidden="true">
+              <img src="../images/jafi-logo.jpg" alt="JAFI — Just a Fresh Idea logo"/>
+            </div>
+            <div class="branding-card-body">
+              <div class="preview-tag">Brand Identity</div>
+              <h3>JAFI — Just a Fresh Idea</h3>
+              <p>
+                Logo design and brand identity created for JAFI, a bakery-café school project.
+                The bubbly, warm wordmark uses a custom rounded typeface and earthy tones to
+                communicate freshness and approachability. The logo appears consistently across
+                all promotional posters for the brand.
+              </p>
+              <div class="branding-meta">
+                <span class="project-tool">Canva / Photoshop</span>
+                <span class="project-tool">School Project</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- POSTER GRID — 4 posters in a row -->
+          <div class="reveal reveal-delay-1">
+            <p class="poster-section-label">Promotional Posters — JAFI Campaign</p>
+            <div class="poster-grid" role="list" aria-label="JAFI promotional posters — click to enlarge">
+
+              <div class="poster-thumb" role="listitem"
+                   data-src="../images/poster-sale.png"
+                   data-caption="Anniversary Promo — 20% Off Sale · JAFI"
+                   tabindex="0"
+                   aria-label="View Anniversary Promo poster fullscreen">
+                <img src="../images/poster-sale.png" alt="JAFI Anniversary Promo — 20% off sale poster" loading="lazy"/>
+                <div class="poster-thumb-overlay">
+                  <span class="poster-thumb-zoom">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    Enlarge
+                  </span>
+                </div>
+              </div>
+
+              <div class="poster-thumb" role="listitem"
+                   data-src="../images/poster-brownies.png"
+                   data-caption="New Treats — Brownies Launch · JAFI"
+                   tabindex="0"
+                   aria-label="View Brownies poster fullscreen">
+                <img src="../images/poster-brownies.png" alt="JAFI Brownies — New Treats promotional poster" loading="lazy"/>
+                <div class="poster-thumb-overlay">
+                  <span class="poster-thumb-zoom">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    Enlarge
+                  </span>
+                </div>
+              </div>
+
+              <div class="poster-thumb" role="listitem"
+                   data-src="../images/poster-croissant.png"
+                   data-caption="Croissant Day — Buy One Take One · JAFI"
+                   tabindex="0"
+                   aria-label="View Croissant Day poster fullscreen">
+                <img src="../images/poster-croissant.png" alt="JAFI Croissant Day — Buy One Take One poster" loading="lazy"/>
+                <div class="poster-thumb-overlay">
+                  <span class="poster-thumb-zoom">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    Enlarge
+                  </span>
+                </div>
+              </div>
+
+              <div class="poster-thumb" role="listitem"
+                   data-src="../images/poster-macaron.png"
+                   data-caption="Christmas Macarons — Holiday Campaign · JAFI"
+                   tabindex="0"
+                   aria-label="View Christmas Macarons poster fullscreen">
+                <img src="../images/poster-macaron.png" alt="JAFI Christmas Macarons — holiday promotional poster" loading="lazy"/>
+                <div class="poster-thumb-overlay">
+                  <span class="poster-thumb-zoom">
+                    <svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                    Enlarge
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </article>
+
+        <!-- ======= 03: WEB & MOBILE ======= -->
+        <article class="project-category" id="dev" aria-labelledby="dev-title">
+          <div class="category-header reveal">
+            <span class="category-num" aria-hidden="true">03 &mdash;</span>
+            <h2 class="category-title" id="dev-title">Web &amp; Mobile Development</h2>
+          </div>
+
+          <!-- HOOK APP — wide card with 5-screen strip -->
+          <div class="reveal" style="
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 24px;
+            transition: box-shadow var(--transition), border-color var(--transition);
+          ">
+            <!-- Screenshot strip -->
+            <div style="
+              background: linear-gradient(160deg, #0a1628 0%, #0d2550 50%, #1a3a6e 100%);
+              padding: 32px 24px 0;
+              display: grid;
+              grid-template-columns: repeat(5, 1fr);
+              gap: 10px;
+              align-items: end;
+            ">
+              <div class="poster-thumb"
+                   data-src="../images/hook-splash.jpg"
+                   data-caption="Hook — Splash Screen"
+                   tabindex="0"
+                   aria-label="View Hook splash screen"
+                   style="aspect-ratio:9/16;border-radius:8px 8px 0 0;border:1px solid rgba(255,255,255,0.12);overflow:hidden;cursor:pointer;">
+                <img src="../images/hook-splash.jpg" alt="Hook app splash screen" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+                <div class="poster-thumb-overlay"><span class="poster-thumb-zoom"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></div>
+              </div>
+              <div class="poster-thumb"
+                   data-src="../images/hook-login.jpg"
+                   data-caption="Hook — Login Screen"
+                   tabindex="0"
+                   aria-label="View Hook login screen"
+                   style="aspect-ratio:9/16;border-radius:8px 8px 0 0;border:1px solid rgba(255,255,255,0.12);overflow:hidden;cursor:pointer;">
+                <img src="../images/hook-login.jpg" alt="Hook app login screen" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+                <div class="poster-thumb-overlay"><span class="poster-thumb-zoom"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></div>
+              </div>
+              <div class="poster-thumb"
+                   data-src="../images/hook-home.jpg"
+                   data-caption="Hook — Home with Food Categories"
+                   tabindex="0"
+                   aria-label="View Hook home screen"
+                   style="aspect-ratio:9/16;border-radius:8px 8px 0 0;border:2px solid rgba(255,255,255,0.35);overflow:hidden;cursor:pointer;margin-bottom:18px;box-shadow:0 -6px 24px rgba(0,0,0,0.5);">
+                <img src="../images/hook-home.jpg" alt="Hook app home screen" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+                <div class="poster-thumb-overlay"><span class="poster-thumb-zoom"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></div>
+              </div>
+              <div class="poster-thumb"
+                   data-src="../images/hook-menu.jpg"
+                   data-caption="Hook — Menu & Item Selection"
+                   tabindex="0"
+                   aria-label="View Hook menu screen"
+                   style="aspect-ratio:9/16;border-radius:8px 8px 0 0;border:1px solid rgba(255,255,255,0.12);overflow:hidden;cursor:pointer;">
+                <img src="../images/hook-menu.jpg" alt="Hook app menu and food selection screen" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+                <div class="poster-thumb-overlay"><span class="poster-thumb-zoom"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></div>
+              </div>
+              <div class="poster-thumb"
+                   data-src="../images/hook-checkout.jpg"
+                   data-caption="Hook — Checkout & Order Confirmation"
+                   tabindex="0"
+                   aria-label="View Hook checkout screen"
+                   style="aspect-ratio:9/16;border-radius:8px 8px 0 0;border:1px solid rgba(255,255,255,0.12);overflow:hidden;cursor:pointer;">
+                <img src="../images/hook-checkout.jpg" alt="Hook app checkout and order confirmation screen" style="width:100%;height:100%;object-fit:cover;display:block;"/>
+                <div class="poster-thumb-overlay"><span class="poster-thumb-zoom"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span></div>
+              </div>
+            </div>
+
+            <!-- Info row -->
+            <div style="padding:26px 28px 28px; display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap;">
+              <div style="flex:1; min-width:260px;">
+                <div class="preview-tag" style="margin-bottom:8px;">Android App</div>
+                <h3 style="font-family:var(--font-body);font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:10px;letter-spacing:-0.01em;">Hook — Seafood Restaurant Ordering App</h3>
+                <p style="font-size:0.87rem;color:var(--text-muted);line-height:1.8;margin:0;">
+                  A restaurant ordering app for a seafood concept, built with Android Studio.
+                  Features a splash screen, user login with social sign-in UI, a home screen with
+                  food categories and promotions, item selection with dine-in/take-out toggle,
+                  and a full checkout flow with itemized order receipt. Built as a school project.
+                </p>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;flex-shrink:0;">
+                <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end;">
+                  <span class="project-tool">Android Studio</span>
+                  <span class="project-tool">Java</span>
+                  <span class="project-tool">XML UI</span>
+                </div>
+                <a href="https://drive.google.com/drive/folders/1omV8Y9pEFbQyBU0ORw2eCiuZt5Bj98GK?usp=sharing" target="_blank" class="project-link" aria-label="View Hook app source on Google Drive">
+                  View source files &rarr;
+                </a>
+                <span style="font-size:0.7rem;color:var(--text-muted);">Paste your Drive link above</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PORTFOLIO WEBSITE CARD -->
+          <div class="project-card reveal reveal-delay-1" style="max-width:560px;">
+            <div class="project-thumb" style="height:150px;background:linear-gradient(135deg,#0f1f35 0%,#1a6ef5 100%);display:flex;align-items:center;justify-content:center;">
+              <div style="text-align:center;">
+                <div style="font-family:var(--font-display);font-size:1.7rem;font-weight:700;color:white;letter-spacing:-0.02em;margin-bottom:4px;">Adrian Bosi</div>
+                <div style="font-size:0.68rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.45);">Portfolio Website</div>
+              </div>
+            </div>
+            <div class="project-info">
+              <h3>This Portfolio Website</h3>
+              <p>Designed and built from scratch with HTML, CSS, and JavaScript. Fully responsive with dark mode, scroll reveal animations, image lightbox, and accessibility features. Deployed live via GitHub Pages.</p>
+              <div class="project-meta">
+                <span class="project-tool">HTML &middot; CSS &middot; JS</span>
+                <a href="https://eigengrau-esque.github.io/adrian_portfolio/" target="_blank" class="project-link" aria-label="View live portfolio website">View live site &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-logo">Adrian Bosi</span>
+        <p>&copy; 2024 &nbsp;&middot;&nbsp; All rights reserved</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="../index.html">Home</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../js/main.js"></script>
+  <script>
+    // ── LIGHTBOX ──────────────────────────────────────────────
+    const overlay    = document.getElementById('lightbox');
+    const lbImg      = document.getElementById('lightboxImg');
+    const lbCaption  = document.getElementById('lightboxCaption');
+    const lbClose    = document.getElementById('lightboxClose');
+    const lbPrev     = document.getElementById('lightboxPrev');
+    const lbNext     = document.getElementById('lightboxNext');
+
+    const thumbs = Array.from(document.querySelectorAll('.poster-thumb'));
+    let current  = 0;
+
+    function openLightbox(index) {
+      current = index;
+      const t = thumbs[current];
+      lbImg.src = t.dataset.src;
+      lbImg.alt = t.querySelector('img').alt;
+      lbCaption.textContent = t.dataset.caption || '';
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      lbClose.focus();
+    }
+
+    function closeLightbox() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+      thumbs[current].focus();
+    }
+
+    function showPrev() {
+      current = (current - 1 + thumbs.length) % thumbs.length;
+      lbImg.src = thumbs[current].dataset.src;
+      lbCaption.textContent = thumbs[current].dataset.caption || '';
+    }
+
+    function showNext() {
+      current = (current + 1) % thumbs.length;
+      lbImg.src = thumbs[current].dataset.src;
+      lbCaption.textContent = thumbs[current].dataset.caption || '';
+    }
+
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => openLightbox(i));
+      thumb.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLightbox(i); }
+      });
+    });
+
+    lbClose.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', showPrev);
+    lbNext.addEventListener('click', showNext);
+
+    // Close on overlay background click
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeLightbox(); });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (!overlay.classList.contains('open')) return;
+      if (e.key === 'Escape')      closeLightbox();
+      if (e.key === 'ArrowLeft')   showPrev();
+      if (e.key === 'ArrowRight')  showNext();
+    });
+  </script>
+
+</body>
+</html>
