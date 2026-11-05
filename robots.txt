@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://eigengrau-esque.github.io/portfolio_site/sitemap.xml
