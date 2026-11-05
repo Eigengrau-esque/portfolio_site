@@ -396,3 +396,22 @@ dialog.lightbox::backdrop { background: rgba(8, 10, 14, 0.92); }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ---- v2.1: hero facts row (replaces sign plates), Gmail link, polish ---- */
+.hero-facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 0; padding: 26px 0 32px; margin: 0; }
+.hero-facts > div { padding: 2px 36px; border-left: 1px solid rgba(255,255,255,0.18); }
+.hero-facts > div:first-child { padding-left: 0; border-left: 0; }
+.hero-facts dt { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; color: var(--asphalt-muted); }
+.hero-facts dd { margin: 2px 0 0; font-family: var(--font-display); font-weight: 700; font-size: 1.08rem; color: var(--on-asphalt, #f3f4ef); }
+.mail-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.copy-btn, .btn { transition: border-color .2s, color .2s, background .2s, transform .2s; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: none; }
+.hero h1 span { display: block; animation: name-in .7s cubic-bezier(.2,.7,.2,1) both; }
+.hero h1 span + span { animation-delay: .12s; }
+@keyframes name-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (max-width: 760px) {
+  .hero-facts { grid-template-columns: 1fr; gap: 14px; padding: 22px 0 26px; }
+  .hero-facts > div, .hero-facts > div:first-child { padding: 0 0 0 14px; border-left: 3px solid var(--amber); }
+}
+@media (prefers-reduced-motion: reduce) { .hero h1 span { animation: none; } .btn:hover { transform: none; } }
